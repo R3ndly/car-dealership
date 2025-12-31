@@ -1,23 +1,21 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
 
 export const useAuthStore = defineStore('auth', () => {
-  const router = useRouter();
 
-  const user = ref(null);
+  const username = ref(null);
   const token = ref(localStorage.getItem('token') || null);
   const error = ref(null);
 
   const isAuthenticated = computed(() => !!token.value);
-  const currentUser = computed(() => user.value);
+  const currentUser = computed(() => username.value);
 
   const login = async (email, password) => {
     error.value = null;
 
     try {
       // TODO: Заменить на реальный API вызов к Symfony микросервису
-      const response = await fetch('http://project/api/auth/login', {
+      const response = await fetch('http://project/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -32,11 +30,9 @@ export const useAuthStore = defineStore('auth', () => {
       const data = await response.json();
 
       token.value = data.token;
-      user.value = data.user;
+      username.value = data.username;
       localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-
-      router.push('/');
+      localStorage.setItem('user', data.username);
 
       return data;
     } catch (err) {
@@ -46,58 +42,51 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const register = async (userData) => {
-    error.value = null;
-
     try {
-      // TODO: Заменить на реальный API вызов
-      const response = await fetch('http://project/api/auth/register', {
+      const response = await fetch('http://project/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(userData)
       })
+      const data = await response.json();
+      console.log(data);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Ошибка регистрации');
+      if (!data.success) {
+        throw new Error(data.message || 'Ошибка регистрации');
       }
 
-      const data = await response.json();
+      //token.value = data.token;
+      username.value = data.username;
+      //localStorage.setItem('token', data.token);
+      localStorage.setItem('user', data.username);
 
-      token.value = data.token;
-      user.value = data.user;
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-
-      router.push('/');
-
-      return data;
+      return data.username;
     } catch (err) {
-      error.value = err.message;
+      console.error('Ошибка регистрации: ', err.message);
       throw err;
     }
   }
 
   const logout = () => {
     token.value = null;
-    user.value = null;
+    username.value = null;
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    router.push('/login');
   }
 
   const restoreUser = () => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
-      user.value = JSON.parse(savedUser);
+      username.value = savedUser;
     }
   }
 
   restoreUser();
 
   return {
-    user,
+    username,
     token,
     error,
     isAuthenticated,
