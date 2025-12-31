@@ -1,11 +1,15 @@
 <script setup></script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <nav>
+    <p>Навигация</p>
+    <router-link to="/">Домой</router-link>
+    <router-link to="/register">Регистрация</router-link>
+  </nav>
+  <main>
+    <router-view />
+  </main>
+  <footer><p>Symfony Microservices + Vue 3 | Учебный проект</p></footer>
 </template>
 
 <style scoped></style>
