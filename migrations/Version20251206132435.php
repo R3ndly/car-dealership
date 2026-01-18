@@ -30,8 +30,6 @@ final class Version20251206132435 extends AbstractMigration
                 username VARCHAR(255) NOT NULL,
                 email VARCHAR(255) NOT NULL UNIQUE,
                 password VARCHAR(255) NOT NULL,
-                is_active BOOLEAN DEFAULT FALSE,
-                last_active TIMESTAMP DEFAULT NULL,
                 role_id smallint NOT NULL DEFAULT 1,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
