@@ -5,6 +5,7 @@
     <p>📧 {{ profile.email }}</p>
     <div>
       <button @click="openEditModal">Изменить данные профиля</button>
+      <button @click="deleteProfile">Удалить профиль</button>
     </div>
   </div>
   <div v-else>
@@ -41,9 +42,11 @@
 
 <script setup>
   import { useProfileStore } from '@/stores/profileStore';
+  import { useRouter } from 'vue-router';
   import { onMounted, ref } from 'vue';
 
   const profileStore = useProfileStore();
+  const router = useRouter();
 
   const profile = ref(null);
   const showEditModal = ref(false);
@@ -79,6 +82,16 @@
     try {
       profile.value = await profileStore.updateProfile(editForm.value);
       closeEditModal();
+    } catch (err) {
+      console.error('Ошибка обновления профиля:', err);
+      alert(err);
+    }
+  };
+
+  const deleteProfile = async () => {
+    try {
+      await profileStore.deleteProfile();
+      router.push('/');
     } catch (err) {
       console.error('Ошибка обновления профиля:', err);
       alert(err);
