@@ -1,3 +1,4 @@
+import router from '@/router';
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 
@@ -49,10 +50,16 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   const logout = () => {
+    const currentRoute = router.currentRoute.value;
+
     token.value = null;
     username.value = null;
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+
+    if(currentRoute.meta?.requiresAuth) {
+      router.push('/');
+    }
   }
 
   return {
