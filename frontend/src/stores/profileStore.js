@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
 
 export const useProfileStore = defineStore('profile', () => {
-  const token = localStorage.getItem('token');
 
   const getProfile = async () => {
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch('http://project/profile', {
         method: 'GET',
         headers: {
@@ -27,6 +27,7 @@ export const useProfileStore = defineStore('profile', () => {
   };
 
   const updateProfile = async (editForm) => {
+    const token = localStorage.getItem('token');
     const response = await fetch('http://project/profile', {
       method: 'PATCH',
       headers: {
@@ -47,6 +48,7 @@ export const useProfileStore = defineStore('profile', () => {
   };
 
   const deleteProfile = async () => {
+    const token = localStorage.getItem('token');
     const response = await fetch('http://project/profile', {
       method: 'DELETE',
       headers: {
