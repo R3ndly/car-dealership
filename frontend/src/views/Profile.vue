@@ -44,9 +44,11 @@
   import { useProfileStore } from '@/stores/profileStore';
   import { useRouter } from 'vue-router';
   import { onMounted, ref } from 'vue';
+  import { useAuthStore } from '@/stores/authStore';
 
   const profileStore = useProfileStore();
   const router = useRouter();
+  const authStore = useAuthStore();
 
   const profile = ref(null);
   const showEditModal = ref(false);
@@ -81,6 +83,8 @@
   const updateProfile = async () => {
     try {
       profile.value = await profileStore.updateProfile(editForm.value);
+      authStore.username = profile.value.username;
+      localStorage.setItem('user', profile.value.username);
       closeEditModal();
     } catch (err) {
       console.error('Ошибка обновления профиля:', err);
